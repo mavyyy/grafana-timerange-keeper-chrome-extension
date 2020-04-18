@@ -1,0 +1,45 @@
+html,body{
+  background: rgb(23,24,25);
+  color: rgb(215,218,218);
+  width: 360px;
+  margin:5px;
+}
+
+#popup_header{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  margin-right: 160px;
+  margin-bottom: 10px;
+  border-bottom: orange 3px solid;
+}
+#popup_icon{
+  width: 60px;
+  height:60px;
+}
+
+#popup_headline{
+  display: inline-block;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+h2{
+  margin-top : 15px;
+}
+
+.time_range_table{
+  margin:5px auto;
+}
+
+.time_cell{
+  width : 140px;
+}
+.range_cell{
+  width:20px;
+}
+
+#store_current_timerange,#apply_configured_timerange{
+  display: block;
+  margin: auto;
+}
