@@ -55,9 +55,7 @@ chrome.tabs.query({
           "configured_to"
         ];
         for (let key of keys) {
-          console.log(key);
           if (params[key]) {
-            console.log(params[key]);
             document.getElementById(key + "_locale").innerText = epochToStr(params[key]);
           }
         }
