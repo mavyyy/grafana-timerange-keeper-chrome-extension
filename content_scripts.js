@@ -1,3 +1,49 @@
+function roundMilliseconds(num){
+  return Math.floor(num/1000)*1000;
+}
+
+function parseTimeParam(time,type){
+  if(!Number.isNaN( parseInt(time))){
+    return time;
+  }
+  if(time==="now"){
+    return roundMilliseconds(Date.now()).toString()
+  }
+  if(matchResult = /now\-(\d+)([smhdwMy])/.exec(time)){
+    var quantity = parseInt(matchResult[1]);
+    var unit = matchResult[2];
+    var result = new Date();
+    switch (matchResult[2]) {
+      case "s":
+        result.setSeconds(result.getSeconds()-quantity);
+        break;
+      case "m":
+        result.setMinutes(result.getMinutes()-quantity);
+        break;
+      case "h":
+        result.setHours(result.getHours()-quantity);
+        break;
+      case "d":
+        result.setDate(result.getDate()-quantity);
+        break;
+      case "w":
+        result.setDate(result.getDate()-quantity*7);
+        break;
+      case "M":
+        result.setMonth(result.getMonth()-quantity*7);
+        break;
+      case "y":
+        result.setFullYear(result.getFullYear()-quantity);
+        break;
+
+      default:
+        break;
+    }
+    return roundMilliseconds(result.getTime()).toString()
+  }
+  return null;
+}
+
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   var isGrafanaWindow = document.body.classList.contains("app-grafana")
   var msg = {
@@ -17,12 +63,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         var params = new URLSearchParams(queryString);
         // set parameters in local storage
         if (params.has("to")) {
-          storage_obj_body.current_to = params.get("to");
+          storage_obj_body.current_to = parseTimeParam(params.get("to"),"to");
         }else{
           storage_obj_body.current_to = null;
         }
         if (params.has("from")) {
-          storage_obj_body.current_from = params.get("from");
+          storage_obj_body.current_from = parseTimeParam(params.get("from"),"from");
         }else{
           storage_obj_body.current_from = null;
         }
