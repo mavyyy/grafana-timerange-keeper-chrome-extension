@@ -58,9 +58,7 @@ chrome.tabs.query({
           console.log(key);
           if (params[key]) {
             console.log(params[key]);
-            var epoch = parseInt(params[key]);
-            var localestr = new Date(epoch).toLocaleString();
-            document.getElementById(key + "_locale").innerText = localestr
+            document.getElementById(key + "_locale").innerText = epochToStr(params[key]);
           }
         }
       }
