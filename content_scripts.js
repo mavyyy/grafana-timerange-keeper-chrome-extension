@@ -18,9 +18,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         // set parameters in local storage
         if (params.has("to")) {
           storage_obj_body.current_to = params.get("to");
+        }else{
+          storage_obj_body.current_to = null;
         }
         if (params.has("from")) {
           storage_obj_body.current_from = params.get("from");
+        }else{
+          storage_obj_body.current_from = null;
         }
         var storage_obj = {};
         storage_obj[hostname] = storage_obj_body;
