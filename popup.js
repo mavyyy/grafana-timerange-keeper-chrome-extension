@@ -100,8 +100,8 @@ chrome.tabs.query({
     app.hostname = response.hostname;
     chrome.storage.local.get(null, function (items) {
       if (items[app.hostname]) {
-        var storage_object = items[hostname];
-        if(storage_object?.configured){
+        var storage_object = items[app.hostname];
+        if (storage_object?.configured) {
           app.configured = storage_object.configured;
         }
         if (storage_object?.configured) {
