@@ -57,11 +57,18 @@ const app = new Vue({
 
 
 function setCongifuredTimeRange(e) {
-  app.configured.from=app.current.from;
-  app.configured.to=app.current.to;
+  app.configured.from = app.current.from;
+  app.configured.to = app.current.to;
+  app.stored.unshift({
+    uuid:generateUuid(),
+    from:app.current.from,
+    to: app.current.to,
+    label:"hoge"
+  })
   var storage_obj = {};
   storage_obj[app.hostname] = {
-    configured:app.configured
+    configured: app.configured,
+    stored:app.stored
   }
   chrome.storage.local.set(storage_obj)
 }
@@ -96,6 +103,9 @@ chrome.tabs.query({
         var storage_object = items[hostname];
         if(storage_object?.configured){
           app.configured = storage_object.configured;
+        }
+        if (storage_object?.configured) {
+          app.stored = storage_object.stored;
         }
       }
       document.getElementById("store_current_timerange").addEventListener(
