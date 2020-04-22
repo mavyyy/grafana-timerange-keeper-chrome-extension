@@ -46,53 +46,40 @@ function parseTimeParam(time, type) {
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   var isGrafanaWindow = document.body.classList.contains("app-grafana")
-  var msg = {
+  var response = {
     isGrafanaWindow: isGrafanaWindow
   }
   if (isGrafanaWindow) {
     if (message.type === "popup") {
-      // response will be only hostname and flag
-      // detailed parameters should be passed as chrome extension local storage
-      var hostname = document.location.hostname
-      chrome.storage.local.get([hostname], function (items) {
-        var storage_obj_body = {}
-        if (items[hostname]) {
-          Object.assign(storage_obj_body, items[hostname]);
-        }
-        var queryString = document.location.search;
-        var params = new URLSearchParams(queryString);
-        // set parameters in local storage
-        if (params.has("to")) {
-          storage_obj_body.current_to = parseTimeParam(params.get("to"),"to");
-        }else{
-          storage_obj_body.current_to = null;
-        }
-        if (params.has("from")) {
-          storage_obj_body.current_from = parseTimeParam(params.get("from"),"from");
-        }else{
-          storage_obj_body.current_from = null;
-        }
-        var storage_obj = {};
-        storage_obj[hostname] = storage_obj_body;
-        chrome.storage.local.set(storage_obj);
-        // set hostname in response msg
-        msg.hostname = hostname;
-        sendResponse(msg);
-      })
+      response.hostname = document.location.hostname
+      response.current = {
+        from:null,
+        to:null
+      }
+      var queryString = document.location.search;
+      var queryParams = new URLSearchParams(queryString);
+      // set parameters in local storage
+      if (queryParams.has("to")) {
+        response.current.to = parseTimeParam(queryParams.get("to"), "to");
+      }
+      if (queryParams.has("from")) {
+        response.current.from = parseTimeParam(queryParams.get("from"), "from");
+      }
+      sendResponse(response);
     } else if (message.type === "apply") {
       var queryString = document.location.search;
       var params = new URLSearchParams(queryString);
-      params.set("from",message.params.from)
-      params.set("to",message.params.to)
+      params.set("from", message.from)
+      params.set("to", message.to)
       location.replace(
-        location.origin
-        +location.pathname
-        +"?"
-        + params.toString()
+        location.origin +
+        location.pathname +
+        "?" +
+        params.toString()
       )
     }
   } else {
-    sendResponse(msg);
+    sendResponse(response);
   }
   return true;
-});
+})

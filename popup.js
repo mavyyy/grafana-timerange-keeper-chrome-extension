@@ -7,26 +7,30 @@ var tabId = null;
 const app = new Vue({
   el:"#app",
   data:{
-    msg:{},
-    params:{
-      current_from:"",
-      current_to:"",
-      configured_from:"",
-      configured_to:""
-    }
+    isGrafanaWindow:false,
+    hostname:null,
+    current:{
+      from:null,
+      to:null
+    },
+    configured:{
+      from:null,
+      to:null
+    },
+    stored:[]
   },
   computed:{
     current_from:function(){
-      return epochToStr(this.params.current_from);
+      return epochToStr(this.current.from);
     },
     current_to:function(){
-      return epochToStr(this.params.current_to);
+      return epochToStr(this.current.to);
     },
     configured_from:function(){
-      return epochToStr(this.params.configured_from);
+      return epochToStr(this.configured.from);
     },
     configured_to:function(){
-      return epochToStr(this.params.configured_to);
+      return epochToStr(this.configured.to);
     }
   }
 })
@@ -34,29 +38,23 @@ const app = new Vue({
 
 
 function setCongifuredTimeRange(e) {
-  params.configured_from = this.from;
-  params.configured_to = this.to;
+  app.configured.from=app.current.from;
+  app.configured.to=app.current.to;
   var storage_obj = {};
-  storage_obj[app.msg.hostname] = params
-  app.params.configured_from=this.from;
-  app.params.configured_to=this.to;
+  storage_obj[app.hostname] = {
+    configured:app.configured
+  }
   chrome.storage.local.set(storage_obj)
 }
 
 
 function applyConfiguredTimeRange(e) {
-  params.current_from = this.from;
-  params.current_to = this.to;
-  var storage_obj = {};
-  storage_obj[app.msg.hostname] = params;
-  app.params.current_from = this.from;
-  app.params.current_to = this.to;
+  app.current.from = app.configured.from;
+  app.current.to = app.configured.to;
   chrome.tabs.sendMessage(tabId, {
     type: "apply",
-    params: {
-      from: this.from,
-      to: this.to
-    }
+    from: app.configured.from,
+    to: app.configured.to
   });
 }
 
@@ -68,39 +66,27 @@ chrome.tabs.query({
   chrome.tabs.sendMessage(tabId, {
     type: "popup"
   }, function (response) {
-    app.msg = response;
+    app.isGrafanaWindow = response.isGrafanaWindow;
     if (!response.isGrafanaWindow) {
       return;
     }
-    var hostname = response.hostname;
+    app.current = response.current;
+    app.hostname = response.hostname;
     chrome.storage.local.get(null, function (items) {
-      if (items[hostname]) {
-        params = items[hostname];
-        keys = [
-          "current_from",
-          "current_to",
-          "configured_from",
-          "configured_to"
-        ];
-        for (let key of keys) {
-          if (params[key]) {
-            app.params[key] = params[key];
-          }
+      if (items[app.hostname]) {
+        var storage_object = items[hostname];
+        if(storage_object?.configured){
+          app.configured = storage_object.configured;
         }
       }
       document.getElementById("store_current_timerange").addEventListener(
         "click", {
-          handleEvent: setCongifuredTimeRange,
-          from: params.current_from,
-          to: params.current_to
+          handleEvent: setCongifuredTimeRange
         })
       document.getElementById("apply_configured_timerange").addEventListener(
         "click", {
-          handleEvent: applyConfiguredTimeRange,
-          from: params.configured_from,
-          to: params.configured_to
-        }
-      )
+          handleEvent: applyConfiguredTimeRange
+        })
     })
   });
 });
