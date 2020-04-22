@@ -16,32 +16,39 @@
     <img src="./grafana.png" id="popup_icon">
     <h1 id="popup_headline">Grafana<br>Timerange<br>Configurator</h1>
   </header>
-  <div id="current_timerange">
-    <h2>Current Timerange</h2>
-    <table class="time_range_table">
-      <tbody>
-        <tr>
-          <td id="current_from_locale" class="time_cell"></td>
-          <td class="range_cell"> - </td>
-          <td id="current_to_locale" class="time_cell"></td>
-        </tr>
-      </tbody>
-    </table>
-    <button id="store_current_timerange">Store current timerange</button>
+  <div id="app">
+    <section v-if="msg.isGrafanaWindow">
+      <div id="current_timerange">
+        <h2>Current Timerange</h2>
+        <table class="time_range_table">
+          <tbody>
+            <tr>
+              <td id="current_from_locale" class="time_cell">{{current_from}}</td>
+              <td class="range_cell"> - </td>
+              <td id="current_to_locale" class="time_cell">{{current_to}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <button id="store_current_timerange">Store current timerange</button>
+      </div>
+      <div id="configured_timerange">
+        <h2>Configured Timerange</h2>
+        <table class="time_range_table">
+          <tbody>
+            <tr>
+              <td id="configured_from_locale" class="time_cell">{{configured_from}}</td>
+              <td class="range_cell"> - </td>
+              <td id="configured_to_locale" class="time_cell">{{configured_to}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button id="apply_configured_timerange">Apply stored timerange to this view</button>
+    </section>
+    <section v-else>
+      this window is not grafana page.
+    </section>
   </div>
-  <div id="configured_timerange">
-    <h2>Configured Timerange</h2>
-    <table class="time_range_table">
-      <tbody>
-        <tr>
-          <td id="configured_from_locale" class="time_cell"></td>
-          <td class="range_cell"> - </td>
-          <td id="configured_to_locale" class="time_cell"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <button id="apply_configured_timerange">Apply stored timerange to this view</button>
 </body>
 <script src="./vue.js"></script>
 <script lang="text/javascript" src="./popup.js"></script>
