@@ -51,6 +51,16 @@ const app = new Vue({
     configured_to: function () {
       return epochToStr(this.configured.to);
     }
+  },
+  methods: {
+    reset: function(e) {
+      chrome.storage.local.clear();
+      this.configured={
+        from: null,
+        to: null
+      }
+      this.stored=[]
+    }
   }
 })
 
