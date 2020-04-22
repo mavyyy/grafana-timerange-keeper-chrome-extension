@@ -1,4 +1,4 @@
-function epochToStr(epoch){
+function epochToStr(epoch) {
   return new Date(parseInt(epoch)).toLocaleString()
 }
 
@@ -24,31 +24,31 @@ var tabId = null;
 
 
 const app = new Vue({
-  el:"#app",
-  data:{
-    isGrafanaWindow:false,
-    hostname:null,
-    current:{
-      from:null,
-      to:null
+  el: "#app",
+  data: {
+    isGrafanaWindow: false,
+    hostname: null,
+    current: {
+      from: null,
+      to: null
     },
-    configured:{
-      from:null,
-      to:null
+    configured: {
+      from: null,
+      to: null
     },
-    stored:[]
+    stored: []
   },
-  computed:{
-    current_from:function(){
+  computed: {
+    current_from: function () {
       return epochToStr(this.current.from);
     },
-    current_to:function(){
+    current_to: function () {
       return epochToStr(this.current.to);
     },
-    configured_from:function(){
+    configured_from: function () {
       return epochToStr(this.configured.from);
     },
-    configured_to:function(){
+    configured_to: function () {
       return epochToStr(this.configured.to);
     }
   }
@@ -60,15 +60,15 @@ function setCongifuredTimeRange(e) {
   app.configured.from = app.current.from;
   app.configured.to = app.current.to;
   app.stored.unshift({
-    uuid:generateUuid(),
-    from:app.current.from,
+    uuid: generateUuid(),
+    from: app.current.from,
     to: app.current.to,
-    label:"hoge"
+    label: "hoge"
   })
   var storage_obj = {};
   storage_obj[app.hostname] = {
     configured: app.configured,
-    stored:app.stored
+    stored: app.stored
   }
   chrome.storage.local.set(storage_obj)
 }
