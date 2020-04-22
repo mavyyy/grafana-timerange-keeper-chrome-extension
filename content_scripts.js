@@ -1,39 +1,39 @@
-function roundMilliseconds(num){
-  return Math.floor(num/1000)*1000;
+function roundMilliseconds(num) {
+  return Math.floor(num / 1000) * 1000;
 }
 
-function parseTimeParam(time,type){
-  if(!Number.isNaN( parseInt(time))){
+function parseTimeParam(time, type) {
+  if (!Number.isNaN(parseInt(time))) {
     return time;
   }
-  if(time==="now"){
+  if (time === "now") {
     return roundMilliseconds(Date.now()).toString()
   }
-  if(matchResult = /now\-(\d+)([smhdwMy])/.exec(time)){
+  if (matchResult = /now\-(\d+)([smhdwMy])/.exec(time)) {
     var quantity = parseInt(matchResult[1]);
     var unit = matchResult[2];
     var result = new Date();
     switch (matchResult[2]) {
       case "s":
-        result.setSeconds(result.getSeconds()-quantity);
+        result.setSeconds(result.getSeconds() - quantity);
         break;
       case "m":
-        result.setMinutes(result.getMinutes()-quantity);
+        result.setMinutes(result.getMinutes() - quantity);
         break;
       case "h":
-        result.setHours(result.getHours()-quantity);
+        result.setHours(result.getHours() - quantity);
         break;
       case "d":
-        result.setDate(result.getDate()-quantity);
+        result.setDate(result.getDate() - quantity);
         break;
       case "w":
-        result.setDate(result.getDate()-quantity*7);
+        result.setDate(result.getDate() - quantity * 7);
         break;
       case "M":
-        result.setMonth(result.getMonth()-quantity*7);
+        result.setMonth(result.getMonth() - quantity * 7);
         break;
       case "y":
-        result.setFullYear(result.getFullYear()-quantity);
+        result.setFullYear(result.getFullYear() - quantity);
         break;
 
       default:
