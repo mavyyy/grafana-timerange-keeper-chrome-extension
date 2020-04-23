@@ -1,3 +1,4 @@
+// Utility functions
 function generateUuid() {
   // https://github.com/GoogleChrome/chrome-platform-analytics/blob/master/src/internal/identifier.js
   // const FORMAT: string = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
@@ -23,9 +24,7 @@ function sync_storage(){
   chrome.storage.local.set(storage_obj)
 }
 
-var tabId = null;
-
-
+// Vue functions
 const app = new Vue({
   el: "#app",
   data: {
@@ -82,6 +81,9 @@ const app = new Vue({
     }
   }
 })
+
+// Initialization
+var tabId = null;
 
 chrome.tabs.query({
   'active': true,
