@@ -41,6 +41,19 @@ const app = new Vue({
     epochToStr: function (epoch) {
       return new Date(parseInt(epoch)).toLocaleString()
     },
+    store: function(){
+      app.history.unshift({
+        uuid: generateUuid(),
+        from: app.current.from,
+        to: app.current.to,
+        label: "<No name>"
+      })
+      var storage_obj = {};
+      storage_obj[app.hostname] = {
+        history: app.history
+      }
+      chrome.storage.local.set(storage_obj)
+    },
     recall: function (e) {
       var uuid = e.target.id.split("_")[1];
       var el = this.history.filter((el)=>{return (el.uuid === uuid);})[0];
@@ -65,22 +78,6 @@ const app = new Vue({
   }
 })
 
-
-
-function setCongifuredTimeRange(e) {
-  app.history.unshift({
-    uuid: generateUuid(),
-    from: app.current.from,
-    to: app.current.to,
-    label: "<No name>"
-  })
-  var storage_obj = {};
-  storage_obj[app.hostname] = {
-    history: app.history
-  }
-  chrome.storage.local.set(storage_obj)
-}
-
 chrome.tabs.query({
   'active': true,
   'currentWindow': true
@@ -102,10 +99,6 @@ chrome.tabs.query({
           app.history = storage_object.history;
         }
       }
-      document.getElementById("store_current_timerange").addEventListener(
-        "click", {
-          handleEvent: setCongifuredTimeRange
-        })
     })
   });
 });
