@@ -27,10 +27,6 @@ const app = new Vue({
       from: null,
       to: null
     },
-    configured: {
-      from: null,
-      to: null
-    },
     stored: []
   },
   computed: {
@@ -48,12 +44,15 @@ const app = new Vue({
     recall: function (e) {
       var uuid = e.target.id.split("_")[1];
       var el = this.stored.filter((el)=>{return (el.uuid === uuid);})[0];
-      var obj = {
+      this.current ={
         from :el.from,
         to:el.to
       }
-      this.current = this.configured = obj;
-      applyConfiguredTimeRange();
+      chrome.tabs.sendMessage(tabId, {
+        type: "apply",
+        from: this.current.from,
+        to: this.current.to
+      });
     },
     remove: function (e) {
       var uuid = e.target.id.split("_")[1];
@@ -61,10 +60,6 @@ const app = new Vue({
     },
     reset: function(e) {
       chrome.storage.local.clear();
-      this.configured={
-        from: null,
-        to: null
-      }
       this.stored=[]
     }
   }
@@ -73,8 +68,6 @@ const app = new Vue({
 
 
 function setCongifuredTimeRange(e) {
-  app.configured.from = app.current.from;
-  app.configured.to = app.current.to;
   app.stored.unshift({
     uuid: generateUuid(),
     from: app.current.from,
@@ -83,21 +76,9 @@ function setCongifuredTimeRange(e) {
   })
   var storage_obj = {};
   storage_obj[app.hostname] = {
-    configured: app.configured,
     stored: app.stored
   }
   chrome.storage.local.set(storage_obj)
-}
-
-
-function applyConfiguredTimeRange(e) {
-  app.current.from = app.configured.from;
-  app.current.to = app.configured.to;
-  chrome.tabs.sendMessage(tabId, {
-    type: "apply",
-    from: app.configured.from,
-    to: app.configured.to
-  });
 }
 
 chrome.tabs.query({
@@ -117,20 +98,13 @@ chrome.tabs.query({
     chrome.storage.local.get(null, function (items) {
       if (items[app.hostname]) {
         var storage_object = items[app.hostname];
-        if (storage_object?.configured) {
-          app.configured = storage_object.configured;
-        }
-        if (storage_object?.configured) {
+        if (storage_object?.stored) {
           app.stored = storage_object.stored;
         }
       }
       document.getElementById("store_current_timerange").addEventListener(
         "click", {
           handleEvent: setCongifuredTimeRange
-        })
-      document.getElementById("apply_configured_timerange").addEventListener(
-        "click", {
-          handleEvent: applyConfiguredTimeRange
         })
     })
   });
