@@ -110,7 +110,11 @@ const app = new Vue({
       this.history = this.history.filter((el)=>{return !(el.uuid === uuid);});
       sync_storage();
     },
-    reset: function(e) {
+    clearAll: function(e) {
+      var isConfirmed = confirm("Clear all timeranges?")
+      if(!isConfirmed){
+        return;
+      }
       this.history=[];
       sync_storage();
     }
