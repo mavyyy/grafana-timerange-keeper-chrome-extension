@@ -15,6 +15,14 @@ function generateUuid() {
   return chars.join("");
 }
 
+function sync_storage(){
+  var storage_obj = {};
+  storage_obj[app.hostname] = {
+    history: app.history
+  }
+  chrome.storage.local.set(storage_obj)
+}
+
 var tabId = null;
 
 
@@ -42,17 +50,13 @@ const app = new Vue({
       return new Date(parseInt(epoch)).toLocaleString()
     },
     store: function(){
-      app.history.unshift({
+      this.history.unshift({
         uuid: generateUuid(),
-        from: app.current.from,
-        to: app.current.to,
+        from: this.current.from,
+        to: this.current.to,
         label: "<No name>"
       })
-      var storage_obj = {};
-      storage_obj[app.hostname] = {
-        history: app.history
-      }
-      chrome.storage.local.set(storage_obj)
+      sync_storage();
     },
     recall: function (e) {
       var uuid = e.target.id.split("_")[1];
@@ -69,11 +73,12 @@ const app = new Vue({
     },
     remove: function (e) {
       var uuid = e.target.id.split("_")[1];
-      app.history = this.history.filter((el)=>{return !(el.uuid === uuid);});
+      this.history = this.history.filter((el)=>{return !(el.uuid === uuid);});
+      sync_storage();
     },
     reset: function(e) {
-      chrome.storage.local.clear();
-      this.history=[]
+      this.history=[];
+      sync_storage();
     }
   }
 })
@@ -92,12 +97,9 @@ chrome.tabs.query({
     }
     app.current = response.current;
     app.hostname = response.hostname;
-    chrome.storage.local.get(null, function (items) {
-      if (items[app.hostname]) {
-        var storage_object = items[app.hostname];
-        if (storage_object?.history) {
-          app.history = storage_object.history;
-        }
+    chrome.storage.local.get(app.hostname, function (items) {
+      if (items[app.hostname] && items[app.hostname].history) {
+          app.history = items[app.hostname].history;
       }
     })
   });
