@@ -39,7 +39,7 @@
       </div>
       <div id="history_body" v-if="history.length != 0">
         <div class="history_item" v-for="item in history" :key="item.uuid" v-bind:id="'div_'+item.uuid">
-          <div>{{item.label}}</div>
+          <history-label :label="item.label" :uuid="item.uuid" @update="update"></history-label>
           <table class="time_range_table">
             <tbody>
               <tr>

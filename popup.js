@@ -24,6 +24,36 @@ function sync_storage(){
   chrome.storage.local.set(storage_obj)
 }
 
+Vue.component('history-label', {
+  props:['label','uuid'],
+  data:function(){
+    return {
+      isEditing : false
+    }
+  },
+  template: `
+  <div :id="'label_'+uuid">
+    <span @click='edit' v-if="!isEditing">{{label}}</span>
+    <input @blur="finishEdit" type="text" v-show="isEditing" v-model="label" :id="'edit_'+uuid"></input>
+  </div>
+  `,
+  methods:{
+    edit:function(e){
+      this.isEditing = true;
+      setTimeout(() => {
+        document.getElementById("edit_"+this.uuid).focus();
+      }, 5);
+    },
+    finishEdit:function(e){
+      this.isEditing = false;
+      this.$emit('update',{
+        uuid : this.uuid,
+        label : this.label
+      });
+    }
+  }
+})
+
 // Vue functions
 const app = new Vue({
   el: "#app",
@@ -69,6 +99,11 @@ const app = new Vue({
         from: this.current.from,
         to: this.current.to
       });
+    },
+    update:function(e){
+      var el = this.history.filter((el)=>{return (el.uuid === e.uuid);})[0];
+      el.label = e.label;
+      sync_storage();
     },
     remove: function (e) {
       var uuid = e.target.id.split("_")[1];
