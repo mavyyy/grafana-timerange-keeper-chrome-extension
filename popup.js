@@ -27,7 +27,7 @@ const app = new Vue({
       from: null,
       to: null
     },
-    stored: []
+    history: []
   },
   computed: {
     current_from: function () {
@@ -43,7 +43,7 @@ const app = new Vue({
     },
     recall: function (e) {
       var uuid = e.target.id.split("_")[1];
-      var el = this.stored.filter((el)=>{return (el.uuid === uuid);})[0];
+      var el = this.history.filter((el)=>{return (el.uuid === uuid);})[0];
       this.current ={
         from :el.from,
         to:el.to
@@ -56,11 +56,11 @@ const app = new Vue({
     },
     remove: function (e) {
       var uuid = e.target.id.split("_")[1];
-      app.stored = this.stored.filter((el)=>{return !(el.uuid === uuid);});
+      app.history = this.history.filter((el)=>{return !(el.uuid === uuid);});
     },
     reset: function(e) {
       chrome.storage.local.clear();
-      this.stored=[]
+      this.history=[]
     }
   }
 })
@@ -68,7 +68,7 @@ const app = new Vue({
 
 
 function setCongifuredTimeRange(e) {
-  app.stored.unshift({
+  app.history.unshift({
     uuid: generateUuid(),
     from: app.current.from,
     to: app.current.to,
@@ -76,7 +76,7 @@ function setCongifuredTimeRange(e) {
   })
   var storage_obj = {};
   storage_obj[app.hostname] = {
-    stored: app.stored
+    history: app.history
   }
   chrome.storage.local.set(storage_obj)
 }
@@ -98,8 +98,8 @@ chrome.tabs.query({
     chrome.storage.local.get(null, function (items) {
       if (items[app.hostname]) {
         var storage_object = items[app.hostname];
-        if (storage_object?.stored) {
-          app.stored = storage_object.stored;
+        if (storage_object?.history) {
+          app.history = storage_object.history;
         }
       }
       document.getElementById("store_current_timerange").addEventListener(
