@@ -4,20 +4,19 @@
   "description": "Keep specified grafana timerange",
   "version": "1.0",
   "icons": {
-      "32": "grafana-timerange-32.png",
-      "48": "grafana-timerange-48.png",
-      "128": "grafana-timerange-128.png"
+      "32": "icons/grafana-timerange-32.png",
+      "48": "icons/grafana-timerange-48.png",
+      "128": "icons/grafana-timerange-128.png"
   },
   "content_scripts": [{
       "matches": ["http://*/*", "https://*/*" ],
       "js": ["content_scripts.js"]
   }],
   "browser_action": {
-      "default_icon": "grafana-timerange-32.png",
+      "default_icon": "icons/grafana-timerange-32.png",
       "default_title": "",
-       "default_popup": "popup.html"
+       "default_popup": "popup/popup.html"
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval';",
   "permissions": [
       "tabs",
       "background",
