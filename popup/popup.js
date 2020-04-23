@@ -75,6 +75,9 @@ const app = new Vue({
     }
   },
   methods: {
+    isCurrentParsable:function(){
+      return !((this.current.from)===null || (this.current.to)===null)
+    },
     epochToStr: function (epoch) {
       return new Date(parseInt(epoch)).toLocaleString()
     },

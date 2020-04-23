@@ -50,6 +50,17 @@ h2{
   display: block;
   margin: auto;
 }
+#current_body_empty p{
+  line-height: 140%;
+}
+
+#current_body_empty>li,#current_body_empty>ul{
+  list-style-type: disc;
+  list-style-position: outside;
+  margin-left: 30px;
+  line-height: 120%;
+}
+
 
 #history_header{
   margin-top:10px;

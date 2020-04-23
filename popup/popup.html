@@ -19,19 +19,34 @@
   <div id="app">
     <section v-if="isGrafanaWindow">
       <div id="current_timerange">
-        <div class="section_header">
+        <div class="section_header" id="current_header">
           <h2>Current Timerange</h2>
         </div>
-        <table class="time_range_table">
-          <tbody>
-            <tr>
-              <td id="current_from" class="time_cell">{{current_from}}</td>
-              <td class="range_cell"> - </td>
-              <td id="current_to" class="time_cell">{{current_to}}</td>
-            </tr>
-          </tbody>
-        </table>
-        <button id="store_current_timerange" @click="store">Store current timerange</button>
+        <div id="current_body" v-if="isCurrentParsable()">
+          <table class="time_range_table">
+            <tbody>
+              <tr>
+                <td id="current_from" class="time_cell">{{current_from}}</td>
+                <td class="range_cell"> - </td>
+                <td id="current_to" class="time_cell">{{current_to}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button id="store_current_timerange" @click="store">Store current timerange</button>
+        </div>
+        <div id="current_body_empty" v-else>
+          <p>
+            Failed to parse current timerange.
+          </p>
+          <p>
+            Possible causes:
+          </p>
+          <ul>
+            <li>Timerange (i.e. from & to) is not specified in query parameter.</li>
+            <li>Timerange representation is wrong.</li>
+            <li>Non-compatible timerange representation is used (e.g. now/d, etc.)</li>
+          </ul>
+        </div>
       </div>
       <div id="history_header" class="section_header">
         <h2 id="history_title">Stored Timerange Hitory</h2>
