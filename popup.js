@@ -1,8 +1,3 @@
-function epochToStr(epoch) {
-  return new Date(parseInt(epoch)).toLocaleString()
-}
-
-
 function generateUuid() {
   // https://github.com/GoogleChrome/chrome-platform-analytics/blob/master/src/internal/identifier.js
   // const FORMAT: string = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
@@ -40,19 +35,22 @@ const app = new Vue({
   },
   computed: {
     current_from: function () {
-      return epochToStr(this.current.from);
+      return this.epochToStr(this.current.from);
     },
     current_to: function () {
-      return epochToStr(this.current.to);
+      return this.epochToStr(this.current.to);
     },
     configured_from: function () {
-      return epochToStr(this.configured.from);
+      return this.epochToStr(this.configured.from);
     },
     configured_to: function () {
-      return epochToStr(this.configured.to);
+      return this.epochToStr(this.configured.to);
     }
   },
   methods: {
+    epochToStr: function (epoch) {
+      return new Date(parseInt(epoch)).toLocaleString()
+    },
     reset: function(e) {
       chrome.storage.local.clear();
       this.configured={
