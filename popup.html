@@ -19,7 +19,9 @@
   <div id="app">
     <section v-if="isGrafanaWindow">
       <div id="current_timerange">
-        <h2>Current Timerange</h2>
+        <div class="section_header">
+          <h2>Current Timerange</h2>
+        </div>
         <table class="time_range_table">
           <tbody>
             <tr>
@@ -31,27 +33,31 @@
         </table>
         <button id="store_current_timerange">Store current timerange</button>
       </div>
-      <div id="configured_timerange">
-        <h2>Configured Timerange</h2>
-        <table class="time_range_table">
-          <tbody>
-            <tr>
-              <td id="configured_from_locale" class="time_cell">{{configured_from}}</td>
-              <td class="range_cell"> - </td>
-              <td id="configured_to_locale" class="time_cell">{{configured_to}}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div id="history_header" class="section_header">
+        <h2 id="history_title">Stored Timerange Hitory</h2>
+        <button @click="reset" v-if="stored.length != 0">Clear</button>
       </div>
-      <button id="apply_configured_timerange">Apply stored timerange to this view</button>
-      <div id="history">
-        <li v-for="item in stored" :key="item.uuid" v-bind:id="item.uuid">
-          {{ epochToStr(item.from) }} - {{ epochToStr(item.to) }}
-          <button v-on:click="recall" v-bind:id="'recall_'+item.uuid">recall</button>
-          <button v-on:click="remove" v-bind:id="'remove_'+item.uuid">remove</button>
-        </li>
+      <div id="history_body" v-if="stored.length != 0">
+        <div class="history_item" v-for="item in stored" :key="item.uuid" v-bind:id="'div_'+item.uuid">
+          <div>{{item.label}}</div>
+          <table class="time_range_table">
+            <tbody>
+              <tr>
+                <td class="time_cell">{{ epochToStr(item.from) }}</td>
+                <td class="range_cell"> - </td>
+                <td class="time_cell">{{ epochToStr(item.to) }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="history_actions">
+            <button v-on:click="recall" v-bind:id="'recall_'+item.uuid">recall</button>
+            <button v-on:click="remove" v-bind:id="'remove_'+item.uuid">remove</button>
+          </div>
+        </div>
       </div>
-      <button @click="reset">Reset</button>
+      <div id="history_body_empty" v-else>
+        No history stored
+      </div>
     </section>
     <section v-else>
       this window is not grafana page.

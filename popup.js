@@ -39,12 +39,6 @@ const app = new Vue({
     },
     current_to: function () {
       return this.epochToStr(this.current.to);
-    },
-    configured_from: function () {
-      return this.epochToStr(this.configured.from);
-    },
-    configured_to: function () {
-      return this.epochToStr(this.configured.to);
     }
   },
   methods: {
@@ -85,7 +79,7 @@ function setCongifuredTimeRange(e) {
     uuid: generateUuid(),
     from: app.current.from,
     to: app.current.to,
-    label: "hoge"
+    label: "<No name>"
   })
   var storage_obj = {};
   storage_obj[app.hostname] = {

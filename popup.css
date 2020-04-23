@@ -1,4 +1,4 @@
-html,body{
+body{
   background: rgb(23,24,25);
   color: rgb(215,218,218);
   width: 360px;
@@ -27,6 +27,11 @@ html,body{
 h2{
   margin-top : 15px;
 }
+.section_header{
+  border-bottom: 1px solid orange;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
 
 .time_range_table{
   margin:5px auto;
@@ -34,12 +39,42 @@ h2{
 
 .time_cell{
   width : 140px;
+  text-align: center;
 }
 .range_cell{
   width:20px;
+  text-align: center;
 }
 
-#store_current_timerange,#apply_configured_timerange{
+#store_current_timerange{
   display: block;
   margin: auto;
+}
+
+#history_header{
+  margin-top:10px;
+}
+#history_title{
+  display: inline-block;
+  margin-right: 20px;
+}
+
+#history_body{
+  max-height: 240px;
+  overflow-y: scroll;
+}
+#history_body_empty{
+  text-align: center;
+}
+
+.history_item{
+  padding: 10px;
+}
+
+.history_item:not(:last-child){
+  border-bottom: 1px silver solid;
+}
+
+.history_actions{
+  text-align: right;
 }
