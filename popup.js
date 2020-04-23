@@ -51,6 +51,20 @@ const app = new Vue({
     epochToStr: function (epoch) {
       return new Date(parseInt(epoch)).toLocaleString()
     },
+    recall: function (e) {
+      var uuid = e.target.id.split("_")[1];
+      var el = this.stored.filter((el)=>{return (el.uuid === uuid);})[0];
+      var obj = {
+        from :el.from,
+        to:el.to
+      }
+      this.current = this.configured = obj;
+      applyConfiguredTimeRange();
+    },
+    remove: function (e) {
+      var uuid = e.target.id.split("_")[1];
+      app.stored = this.stored.filter((el)=>{return !(el.uuid === uuid);});
+    },
     reset: function(e) {
       chrome.storage.local.clear();
       this.configured={

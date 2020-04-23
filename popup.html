@@ -44,6 +44,13 @@
         </table>
       </div>
       <button id="apply_configured_timerange">Apply stored timerange to this view</button>
+      <div id="history">
+        <li v-for="item in stored" :key="item.uuid" v-bind:id="item.uuid">
+          {{ epochToStr(item.from) }} - {{ epochToStr(item.to) }}
+          <button v-on:click="recall" v-bind:id="'recall_'+item.uuid">recall</button>
+          <button v-on:click="remove" v-bind:id="'remove_'+item.uuid">remove</button>
+        </li>
+      </div>
       <button @click="reset">Reset</button>
     </section>
     <section v-else>
