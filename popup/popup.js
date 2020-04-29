@@ -34,7 +34,7 @@ Vue.component('history-label', {
   template: `
   <div :id="'label_'+uuid">
     <span @click='edit' v-if="!isEditing">{{label}}</span>
-    <input @blur="finishEdit" type="text" v-show="isEditing" v-model="label" :id="'edit_'+uuid"></input>
+    <input @blur="finishEdit" @keydown.enter="enterKey" type="text" v-show="isEditing" v-model="label" :id="'edit_'+uuid"></input>
   </div>
   `,
   methods:{
@@ -43,6 +43,12 @@ Vue.component('history-label', {
       setTimeout(() => {
         document.getElementById("edit_"+this.uuid).focus();
       }, 5);
+    },
+    enterKey:function(e){
+      console.log(e);
+      if(!e.isComposing){
+        this.finishEdit(e);
+      }
     },
     finishEdit:function(e){
       this.isEditing = false;
