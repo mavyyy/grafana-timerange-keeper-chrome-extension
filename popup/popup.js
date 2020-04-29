@@ -4,19 +4,19 @@ function generateUuid() {
   // const FORMAT: string = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
   let chars = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".split("");
   for (let i = 0, len = chars.length; i < len; i++) {
-      switch (chars[i]) {
-          case "x":
-              chars[i] = Math.floor(Math.random() * 16).toString(16);
-              break;
-          case "y":
-              chars[i] = (Math.floor(Math.random() * 4) + 8).toString(16);
-              break;
-      }
+    switch (chars[i]) {
+      case "x":
+        chars[i] = Math.floor(Math.random() * 16).toString(16);
+        break;
+      case "y":
+        chars[i] = (Math.floor(Math.random() * 4) + 8).toString(16);
+        break;
+    }
   }
   return chars.join("");
 }
 
-function sync_storage(){
+function sync_storage() {
   var storage_obj = {};
   storage_obj[app.hostname] = {
     history: app.history
@@ -25,10 +25,10 @@ function sync_storage(){
 }
 
 Vue.component('history-label', {
-  props:['label','uuid'],
-  data:function(){
+  props: ['label', 'uuid'],
+  data: function () {
     return {
-      isEditing : false
+      isEditing: false
     }
   },
   template: `
@@ -37,24 +37,24 @@ Vue.component('history-label', {
     <input @blur="finishEdit" @keydown.enter="enterKey" type="text" v-show="isEditing" v-model="label" :id="'edit_'+uuid"></input>
   </div>
   `,
-  methods:{
-    edit:function(e){
+  methods: {
+    edit: function (e) {
       this.isEditing = true;
       setTimeout(() => {
-        document.getElementById("edit_"+this.uuid).focus();
+        document.getElementById("edit_" + this.uuid).focus();
       }, 5);
     },
-    enterKey:function(e){
+    enterKey: function (e) {
       console.log(e);
-      if(!e.isComposing){
+      if (!e.isComposing) {
         this.finishEdit(e);
       }
     },
-    finishEdit:function(e){
+    finishEdit: function (e) {
       this.isEditing = false;
-      this.$emit('update',{
-        uuid : this.uuid,
-        label : this.label
+      this.$emit('update', {
+        uuid: this.uuid,
+        label: this.label
       });
     }
   }
@@ -81,13 +81,13 @@ const app = new Vue({
     }
   },
   methods: {
-    isCurrentParsable:function(){
-      return !((this.current.from)===null || (this.current.to)===null)
+    isCurrentParsable: function () {
+      return !((this.current.from) === null || (this.current.to) === null)
     },
     epochToStr: function (epoch) {
       return new Date(parseInt(epoch)).toLocaleString()
     },
-    store: function(){
+    store: function () {
       this.history.unshift({
         uuid: generateUuid(),
         from: this.current.from,
@@ -98,10 +98,12 @@ const app = new Vue({
     },
     recall: function (e) {
       var uuid = e.target.id.split("_")[1];
-      var el = this.history.filter((el)=>{return (el.uuid === uuid);})[0];
-      this.current ={
-        from :el.from,
-        to:el.to
+      var el = this.history.filter((el) => {
+        return (el.uuid === uuid);
+      })[0];
+      this.current = {
+        from: el.from,
+        to: el.to
       }
       chrome.tabs.sendMessage(tabId, {
         type: "apply",
@@ -109,54 +111,61 @@ const app = new Vue({
         to: this.current.to
       });
     },
-    update:function(e){
-      var el = this.history.filter((el)=>{return (el.uuid === e.uuid);})[0];
+    update: function (e) {
+      var el = this.history.filter((el) => {
+        return (el.uuid === e.uuid);
+      })[0];
       el.label = e.label;
       sync_storage();
     },
     remove: function (e) {
       var uuid = e.target.id.split("_")[1];
-      this.history = this.history.filter((el)=>{return !(el.uuid === uuid);});
+      this.history = this.history.filter((el) => {
+        return !(el.uuid === uuid);
+      });
       sync_storage();
     },
-    clearAll: function(e) {
+    clearAll: function (e) {
       var isConfirmed = confirm("Clear all timeranges?")
-      if(!isConfirmed){
+      if (!isConfirmed) {
         return;
       }
-      this.history=[];
+      this.history = [];
       sync_storage();
     },
-    up:function(e){
+    up: function (e) {
       var uuid = e.target.id.split("_")[1];
-      if(uuid === this.firstUuid()){
+      if (uuid === this.firstUuid()) {
         return;
       }
-      var idx = this.history.findIndex((el)=>{return (el.uuid === uuid);});
+      var idx = this.history.findIndex((el) => {
+        return (el.uuid === uuid);
+      });
       var el = this.history[idx];
-      this.history.splice(idx,1);
-      this.history.splice(idx-1,0,el);
+      this.history.splice(idx, 1);
+      this.history.splice(idx - 1, 0, el);
       sync_storage();
     },
-    down:function(e){
+    down: function (e) {
       var uuid = e.target.id.split("_")[1];
-      if(uuid === this.lastUuid()){
+      if (uuid === this.lastUuid()) {
         return;
       }
 
-      var idx = this.history.findIndex((el)=>{return (el.uuid === uuid);});
+      var idx = this.history.findIndex((el) => {
+        return (el.uuid === uuid);
+      });
       var el = this.history[idx];
-      this.history.splice(idx,1);
-      this.history.splice(idx+1,0,el);
+      this.history.splice(idx, 1);
+      this.history.splice(idx + 1, 0, el);
       sync_storage();
     },
-    firstUuid:function(e){
+    firstUuid: function (e) {
       return this.history[0].uuid;
     },
-    lastUuid:function(e){
+    lastUuid: function (e) {
       return this.history[this.history.length - 1].uuid;
     }
-
   }
 })
 
@@ -179,7 +188,7 @@ chrome.tabs.query({
     app.hostname = response.hostname;
     chrome.storage.local.get(app.hostname, function (items) {
       if (items[app.hostname] && items[app.hostname].history) {
-          app.history = items[app.hostname].history;
+        app.history = items[app.hostname].history;
       }
     })
   });

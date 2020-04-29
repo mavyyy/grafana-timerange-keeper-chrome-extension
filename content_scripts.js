@@ -53,8 +53,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.type === "popup") {
       response.hostname = document.location.hostname
       response.current = {
-        from:null,
-        to:null
+        from: null,
+        to: null
       }
       var queryString = document.location.search;
       var queryParams = new URLSearchParams(queryString);
