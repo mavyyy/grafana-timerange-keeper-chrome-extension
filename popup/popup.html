@@ -65,6 +65,8 @@
             </tbody>
           </table>
           <div class="history_actions">
+            <button v-on:click="up" v-bind:id="'up_'+item.uuid" :disabled="item.uuid === firstUuid()">&uarr;</button>
+            <button v-on:click="down" v-bind:id="'down_'+item.uuid" :disabled="item.uuid === lastUuid()">&darr;</button>
             <button v-on:click="recall" v-bind:id="'recall_'+item.uuid">recall</button>
             <button v-on:click="remove" v-bind:id="'remove_'+item.uuid">remove</button>
           </div>

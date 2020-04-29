@@ -126,7 +126,37 @@ const app = new Vue({
       }
       this.history=[];
       sync_storage();
+    },
+    up:function(e){
+      var uuid = e.target.id.split("_")[1];
+      if(uuid === this.firstUuid()){
+        return;
+      }
+      var idx = this.history.findIndex((el)=>{return (el.uuid === uuid);});
+      var el = this.history[idx];
+      this.history.splice(idx,1);
+      this.history.splice(idx-1,0,el);
+      sync_storage();
+    },
+    down:function(e){
+      var uuid = e.target.id.split("_")[1];
+      if(uuid === this.lastUuid()){
+        return;
+      }
+
+      var idx = this.history.findIndex((el)=>{return (el.uuid === uuid);});
+      var el = this.history[idx];
+      this.history.splice(idx,1);
+      this.history.splice(idx+1,0,el);
+      sync_storage();
+    },
+    firstUuid:function(e){
+      return this.history[0].uuid;
+    },
+    lastUuid:function(e){
+      return this.history[this.history.length - 1].uuid;
     }
+
   }
 })
 
