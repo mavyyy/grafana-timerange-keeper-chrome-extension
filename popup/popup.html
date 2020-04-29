@@ -51,6 +51,9 @@
       <div id="history_header" class="section_header">
         <h2 id="history_title">Stored Timerange Hitory</h2>
         <button @click="clearAll" v-if="history.length != 0">Clear all</button>
+        <a id="export_link" href="#" :download="'grafana_timerange_'+hostname+'.json'"><button @click="export" v-if="history.length != 0">export</button></a>
+        <button @click="importPrompt">import</button>
+        <input type="file" id="import_form" @change="import">
       </div>
       <div id="history_body" v-if="history.length != 0">
         <div class="history_item" v-for="item in history" :key="item.uuid" v-bind:id="'div_'+item.uuid">

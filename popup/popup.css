@@ -70,6 +70,10 @@ h2{
   margin-right: 20px;
 }
 
+#import_form{
+  display: none;
+}
+
 #history_body{
   max-height: 240px;
   overflow-y: scroll;

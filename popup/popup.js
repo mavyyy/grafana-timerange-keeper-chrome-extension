@@ -45,7 +45,6 @@ Vue.component('history-label', {
       }, 5);
     },
     enterKey: function (e) {
-      console.log(e);
       if (!e.isComposing) {
         this.finishEdit(e);
       }
@@ -165,6 +164,48 @@ const app = new Vue({
     },
     lastUuid: function (e) {
       return this.history[this.history.length - 1].uuid;
+    },
+    export: function (e) {
+      var blob = new Blob([JSON.stringify(this.history)], {
+        "type": "text/json"
+      });
+      document.getElementById("export_link").href = window.URL.createObjectURL(blob);
+    },
+    importPrompt: function (e) {
+      document.getElementById("import_form").click()
+    },
+    import: function (e) {
+      var fileData = e.target.files[0];
+      var reader = new FileReader();
+      reader.onload = () => {
+        try {
+          var data = JSON.parse(reader.result);
+        } catch (error) {
+          alert("Invalid json");
+          return;
+        }
+        if (!this.isValidJson(data)) {
+          alert("Invalid format data")
+        }
+        var existentUuids = this.history.map((el) => {
+          return el.uuid;
+        });
+        var toBeInserted = data.filter((el) => {
+          return existentUuids.indexOf(el.uuid) === -1;
+        });
+        this.history.splice(0, 0, ...toBeInserted);
+        if (toBeInserted.length != data.length) {
+          alert(`${data.length - toBeInserted.length} elements were duplicated hence not imported.`);
+        }
+        sync_storage();
+      }
+      reader.readAsText(fileData);
+    },
+    isValidJson: function (data) {
+      if (!Array.isArray(data)) return false;
+      return data.every((el) => {
+        return Object.keys(el).length === 4 && el.from && el.to && el.uuid && el.label;
+      })
     }
   }
 })
